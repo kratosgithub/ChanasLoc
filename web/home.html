@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!-- required meta tags -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <!--[if lte IE 8]><script src="web/js/ie/html5shiv.js"></script><![endif]-->
+        
+        <link rel="icon" href="resources/assets/img/favicon.ico"/>
+        <title>Accueil | Health Care Networks</title>
+        
+        <script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+        <link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet'/>
+        
+        <!-- <link rel="stylesheet" href="resources/css/bootstrap.min.css"/> -->
+        <link href="resources/css/map.min.css" rel="stylesheet"/>
+        
+        <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet'/>
+        <!--[if lt IE 9]>
+            <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.ie.css' rel='stylesheet'/>
+        <![endif]-->
+        <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/css/font-awesome.min.css' rel='stylesheet'/>
+    </head>
+    <body>
+        <!-- <script src="https://unpkg.com/leaflet/dist/leaflet-src.js"></script> -->
+	<script src="https://unpkg.com/leaflet-knn@0.1.0/leaflet-knn.js"></script>
+        <!-- <script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script> -->
+        <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
+        
+        <!-- jQuery is required for this example. -->
+        <!-- <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script> --> 
+        
+        <!--
+        <nav class='menu-ui' id='menu-ui'>
+            <a href='#' class='active' id='filter-all'>Tous les guichets</a>
+            <a href='#' id='filter-inactif'>guichets non actifs</a>
+        </nav>
+        -->
+        
+        <!-- Set the display of this container to none so we can
+             add it programmatically to `legendControl` -->
+        <div id="legend" style="display: none;">
+            <strong>Légende Carte</strong>
+            <nav class="legend">
+                <span style="background: #1fa055;"></span>
+                <span style="background: #dc143c;"></span>
+                <span style="background: #ffff00;"></span>
+                <span style="background: #660099;"></span>
+            </nav> <!-- fermeture de nav -->
+        </div> <!-- fermeture de div legend -->
+        
+        <div id="map"></div>
+        <a href="#" id="geolocate" class="ui-button btn btn-primary">Me localiser</a>
+        
+        <!-- ======================= SCRIPT ================================ -->
+        <script>
+            L.mapbox.accessToken = 'pk.eyJ1IjoibmRvemVuZy1qdW5pb3I2NjYiLCJhIjoiY2tkb3J5NGo4MGpkczJycW9reWt5anAxMiJ9.T_D6-pdRo6XwG50-PFzH0g';
+            var geolocate = document.getElementById('geolocate');
+            var map = L.mapbox.map('map', null, {zoomControl: false})
+                    .setView([5.20, 10.25], 9)
+                    .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+            
+            // Add to Zoom control to the map
+            new L.Control.Zoom({position: 'topright'}).addTo(map);
+            L.control.locate({position: 'topright'}).addTo(map);
+            
+            // move the attribution control out of the way
+            map.attributionControl.setPosition('bottomleft');
+            map.legendControl.addLegend(document.getElementById('legend').innerHTML);
+            
+            var myLayer = L.mapbox.featureLayer().addTo(map);
+            
+            /*
+             * var markers = L.mapbox.featureLayer()
+             *    .setGeoJSON(geoCounters)
+             *    .addTo(map);
+             */
+            
+            // var myFeatureLayer = L.mapbox.featureLayer()
+                    // .addTo(map);
+            
+            // var all = document.getElementById('filter-all');
+            // var inactif = document.getElementById('filter-inactif');
+            
+            // This uses the HTML5 geolocation API, which is available on
+            // most mobile browsers and modern browsers, but not in Internet Explorer
+            //
+            // See this chart of compatibility for details:
+            // http://caniuse.com/#feat=geolocation
+            if(!navigator.geolocation) {
+                geolocate.innerHTML = "La géolocalisation n'est pas disponible";
+            } else {
+                geolocate.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    map.locate();
+                };
+            }// fin de la condition sur le statut de la géolocalisation
+            
+            // Once we've got a position, zoom and center the map
+            // on it, and add a single marker.
+            map.on('locationfound', function(e){
+                map.fitBounds(e.bounds);
+                
+                myLayer.setGeoJSON({
+                    type: 'Feature',
+                    geometry : {type: 'Point', coordinates: [e.latlng.lng, e.latlng.lat]},
+                    properties: {
+                        'title': 'Vous êtes ici !!!',
+                        'marker-color': '#0e3894',
+                        'marker-symbol': 'star'
+                    }
+                });
+                
+                // Add hide the geolocation button
+                geolocate.parentNode.removeChild(geolocate);
+            });
+            
+            // If the user chooses not to allow their location
+            // to be shared, display an error message
+            map.on('locationerror', function() {
+                geolocate.innerHTML = "Votre position n'a pas été trouvée !!!";
+            });
+            
+            
+            // $('.menu-ui a').on('click', function() {
+                // For each filter link, get the 'data-filter' attribute value.
+                // var filter = $(this).data('filter');
+                
+                // $(this).addClass('active').siblings().removeClass('active');
+                // markers.setFilter(function(f) {
+                    // If the data-filter attribute is set to "all", return
+                    // all (true). Otherwise, filter on markers that have
+                    // a value set to true based on the filter name.
+                    // return (filter === 'all') ? true : f.properties[filter] === true;
+                // });
+                
+                // return false;
+            // });
+            
+            /*
+             *inactif.onclick = function(e) {
+             *       all.className = '';
+             *       this.className = 'active';
+             *       // The setFilter function takes a GeoJSON feature object
+             *       // and returns true to show it or false to hide it.
+             *       myFeatureLayer.setFilter(function(f) {
+             *       return f.properties['marker-color'] === '#660099';
+             *   });
+             *   return false;
+             *};
+             */
+            
+            /*
+             *all.onclick = function() {
+             *       off.className = '';
+             *       this.className = 'active';
+             *       myFeatureLayer.setFilter(function(f) {
+             *       // Returning true for all markers shows everything.
+             *       return true;
+             *   });
+             *   return false;
+             *};
+             */
+            
+            // create the initial directions object, from which the layer
+        </script> <!-- fermeture du script contenu de la carte -->
+        
+        <script src="resources/js/adamaou.js"></script>
+        <script src="resources/js/nearest.js"></script>
+    </body> <!--- /body -->
+</html> <!-- /html -->
