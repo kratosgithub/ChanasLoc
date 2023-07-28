@@ -1,0 +1,11 @@
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. 
+ */
+ 
+ /* Optional: Makes the simple page fill window. */
+ html, body {
+	margin: 0;
+	padding: 0;
+ }
+ 
+#map { position: absolute; top: 0; bottom: 0; width: 90.25%; }

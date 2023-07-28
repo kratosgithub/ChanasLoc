@@ -1,0 +1,135 @@
+
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. 
+ */
+ 
+ /* Optional: Makes the simple page fill window. */
+ html, body {
+	 margin: 0;
+	 padding: 0;
+ }
+ 
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+ 
+.coordinates {
+	background: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	position: absolute;
+	bottom: 40px;
+	left: 10px;
+	padding: 5px 10px;
+	margin: 0;
+	font-size: 11px;
+	line-height: 18px;
+	border-radius: 3px;
+	display: none;
+} 
+ 
+
+.ui-button {
+  	background:#3887BE;
+  	color:#FFF;
+  	display:block;
+  	position:absolute;
+  	top:50%;left:50%;
+  	width:160px;
+  	margin:-20px 0 0 -80px;
+  	z-index:100;
+  	text-align:center;
+  	padding:10px;
+  	border:1px solid rgba(0,0,0,0.4);
+  	border-radius:3px;
+  }
+
+  .ui-button:hover {
+    background:#3074a4;
+    color:#fff;
+  }
+
+
+.menu-ui {
+  background:#fff;
+  position:absolute;
+  top:10px;left:10px;
+  z-index:1;
+  border-radius:3px;
+  width:120px;
+  border:1px solid rgba(0,0,0,0.4);
+}
+
+.menu-ui a {
+    font-size:13px;
+    color:#404040;
+    display:block;
+    margin:0;padding:0;
+    padding:10px;
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,0,0,0.25);
+    text-align:center;
+}
+
+.menu-ui a:first-child {
+    border-radius:3px 3px 0 0;
+}
+
+.menu-ui a:last-child {
+   border:none;
+   border-radius:0 0 3px 3px;
+}
+
+.menu-ui a:hover {
+   background:#f8f8f8;
+   color:#404040;
+}
+
+.menu-ui a.active,
+.menu-ui a.active:hover {
+   background:#3887BE;
+   color:#FFF;
+}
+
+.legend label,
+.legend span {
+  display:block;
+  float:left;
+  height:12px;
+  width:25%;
+  text-align:center;
+  font-size:9px;
+  color:#808080;
+}
+
+#inputs,
+#errors,
+#directions {
+    position: absolute;
+    width: 33.3333%;
+    max-width: 300px;
+    min-width: 200px;
+}
+
+#inputs {
+    z-index: 10;
+    top: 10px;
+    left: 10px;
+}
+
+#directions {
+    z-index: 99;
+    background: rgba(0,0,0,.8);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#errors {
+    z-index: 8;
+    opacity: 0;
+    padding: 10px;
+    border-radius: 0 0 3px 3px;
+    background: rgba(0,0,0,.25);
+    top: 90px;
+    left: 10px;
+}
+

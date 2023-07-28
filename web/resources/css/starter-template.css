@@ -1,0 +1,23 @@
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.erreur {
+  color: red;
+}
+
+.info {
+  color: #17a2b8;
+}
+
+.ui-datatable {
+  margin: auto;
+}
+
+.ui-datatable .ui-datatable-header {
+  text-align: right !important;  
+}
